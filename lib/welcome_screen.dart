@@ -21,140 +21,158 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 100.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
         backgroundColor: Colors.purple,
-        title: Text('Welcome, ' + username),
+        title: Text(
+          'Welcome, '+ username,
+        ),
         actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                  value: 'Setting',
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings, color: Colors.purple),
-                      Text('  Settings', style: TextStyle(color: Colors.black))
-                    ],
-                  )),
-              PopupMenuItem(
-                  value: 'Help',
-                  child: Row(
-                    children: [
-                      Icon(Icons.help, color: Colors.purple),
-                      Text(
-                        '  Help',
-                        style: TextStyle(color: Colors.black),
-                      )
-                    ],
-                  )),
-              PopupMenuItem(
-                  value: 'Logout',
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.purple),
-                      Text(
-                        '  Logout',
-                        style: TextStyle(color: Colors.black),
-                      )
-                    ],
-                  )),
-            ],
-          )
+          PopupMenuButton(itemBuilder:(BuildContext context)=>[
+            PopupMenuItem(
+                value:'Setting',
+                child:Row(
+                  children: [
+                    Icon(Icons.settings,
+                        color: Colors.purple),
+                    Text('  Settings',
+                      style: TextStyle(
+                          color: Colors.black
+                      ),)
+                  ],
+                )
+            ),
+            PopupMenuItem(
+                value:'Help',
+                child:Row(
+                  children: [
+                    Icon(Icons.help,
+                        color: Colors.purple),
+                    Text('  Help',
+                      style: TextStyle(
+                          color: Colors.black
+                      ),)
+                  ],
+                )
+            ),
+            PopupMenuItem(
+                value:'Logout',
+                child:Row(
+                  children: [
+                    Icon(Icons.logout,
+                        color: Colors.purple),
+                    Text('  Logout',
+                      style: TextStyle(
+                          color: Colors.black
+                      ),)
+                  ],
+                )
+            ),
+          ])
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 25.0, left: 15.0),
-            child: Text(
-              'Info',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30.0,
-              ),
-            ),
+      body:Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [Colors.purple,Colors.indigo],
           ),
-          Column(children: [
-            SizedBox(
-              height: 200,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 8.0, left: 10.0, right: 10.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.purple[400],
-                    // gradient: LinearGradient(
-                    //   begin: Alignment.topCenter,
-                    //   end: Alignment.bottomCenter,
-                    //   colors: [Colors.purple[100],Colors.white],
-                    // ),
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 10.0, right: 10.0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Text(
-                        "Yes there are now several vaccines that are in use. The first mass vaccination programme started in early December 2020 and as of and as of 15 February 2021, 175.3 million vaccine doses have been administered.",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+                Padding(
+                  padding: const EdgeInsets.only(top:25.0,left:15.0),
+                  child: Text(
+                    'Info',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                        fontSize: 30.0,
                     ),
                   ),
                 ),
-              ),
-            )
-          ]),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0, left: 15.0),
-                child: Text(
-                  'News',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-                ),
-              ),
-              SizedBox(
-                height: 300,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: 4.0, left: 10.0, right: 10.0),
-                  child: ListView.builder(
-                    itemCount: news.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 2.0),
-                        child: Card(
-                          elevation: 0,
-                          color: Colors.purple[400],
-                          child: Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+            Column(
+                  children: [
+                    SizedBox(
+                      height: 200,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:8.0,left:10.0,right:10.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top:10.0,left:10.0,right:10.0),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
                               child: Text(
-                                news[index],
+                                "Yes there are now several vaccines that are in use. The first mass vaccination programme started in early December 2020 and as of and as of 15 February 2021, 175.3 million vaccine doses have been administered.",
                                 style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.white,
+                                  fontSize: 20,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    )
+                  ]
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top:30.0,left:15.0),
+                  child: Text(
+                    'News',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30.0
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+                SizedBox(
+                  height: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top:4.0,left:10.0,right:10.0),
+                    child: ListView.builder(
+                        itemCount: news.length,
+                        itemBuilder: (context,index){
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0),
+                            child: Card(
+                              shape:RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                              ),
+                              elevation: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(news[index],
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                      )),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+      )
     );
   }
 }
+
