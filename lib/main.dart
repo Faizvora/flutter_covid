@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
+import 'welcome_screen-1.dart';
 import 'login2.dart';
 import 'signup.dart';
 import 'forgot_password.dart';
 import 'get_from_server.dart';
+import 'appointment_details.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,9 +19,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Login(),
-        '/welcome': (context) => WelcomeScreen(),
+        '/welcome': (context) => WelcomeScreen(username: 'username'),
         '/signup': (context) => SignUpscreen(),
         '/forgot': (context) => ForgotPassword(),
+        '/Appointmentdetails': (context) => AppointmentDetails(),
       },
     );
   }

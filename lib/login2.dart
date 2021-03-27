@@ -1,3 +1,4 @@
+import 'package:covid_vaccine/welcome_screen-1.dart';
 import 'package:flutter/material.dart';
 import 'get_from_server.dart';
 
@@ -5,6 +6,25 @@ class Login extends StatelessWidget {
   get crossAxisAlignment => null;
   final userController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final enter_username_sb = SnackBar(
+    content: Text('Enter valid username or email!'),
+    backgroundColor: Colors.grey,
+  );
+  final enter_password_sb = SnackBar(
+    content: Text('Enter valid password!'),
+    backgroundColor: Colors.grey,
+  );
+  final username_ne_sb = SnackBar(
+    content: Text('Username not Exists'),
+    backgroundColor: Colors.grey,
+  );
+  final wrong_password_sb = SnackBar(
+    content: Text('Wrong Password'),
+    backgroundColor: Colors.grey,
+  );
+
+  var usere = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +54,10 @@ class Login extends StatelessWidget {
                   TextField(
                       controller: userController,
                       decoration: InputDecoration(
-                        hintText: "Enter your Email",
+                        hintText: "Enter Email",
                         hintStyle: TextStyle(color: Colors.grey),
                         border: InputBorder.none,
-                        prefixIcon: Icon(Icons.email),
+                        prefixIcon: Icon(Icons.email, color: Colors.purple),
                       ))
                 ]),
               ),
@@ -53,8 +73,9 @@ class Login extends StatelessWidget {
                       hintText: "Enter Password",
                       hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      prefixIcon: Icon(Icons.lock),
-                      suffixIcon: Icon(Icons.visibility_off),
+                      prefixIcon: Icon(Icons.lock, color: Colors.purple),
+                      suffixIcon:
+                          Icon(Icons.visibility_off, color: Colors.purple),
                     ),
                     obscureText: true,
                   )
@@ -64,16 +85,46 @@ class Login extends StatelessWidget {
               Center(
                   child: RaisedButton(
                       onPressed: () async {
-                        FetchData fetchData = FetchData();
-                        var body = await fetchData.getUser('');
-                        print('RESPONSE');
-                        print(body);
-                        return showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(content: Text(body));
-                            });
-                        // Navigator.pushNamed(context, '/welcome');
+                        usere = false;
+                        if (userController.text == '') {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(enter_username_sb);
+                        }
+                        if (passwordController.text == '') {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(enter_password_sb);
+                        }
+                        if (userController.text != '' &&
+                            passwordController.text != '') {
+                          FetchData fetchData = FetchData();
+                          var body = await fetchData.getUser('');
+                          for (int i = 0; i < body['results'].length; i++) {
+                            if (body['results'][i]['email_id'] ==
+                                    userController.text ||
+                                body['results'][i]['username'] ==
+                                    userController.text) {
+                              // USER EXISTS
+                              usere = true;
+                              print(body['results'][i]['username']);
+                              var usern = body['results'][i]['username'];
+                              if (body['results'][i]['password'] ==
+                                  passwordController.text) {
+                                // Navigator.pushNamed(context, '/welcome');
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => WelcomeScreen(
+                                          username: usern,
+                                        )));
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(wrong_password_sb);
+                              }
+                            }
+                          }
+                          if (usere == false) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(username_ne_sb);
+                          }
+                        }
                       },
                       color: Colors.white,
                       shape: RoundedRectangleBorder(

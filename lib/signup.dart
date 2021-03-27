@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'get_from_server.dart';
 
 class SignUpscreen extends StatefulWidget {
   @override
@@ -6,8 +9,13 @@ class SignUpscreen extends StatefulWidget {
 }
 
 class _SignUpscreen extends State<SignUpscreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController f_name = TextEditingController();
+  final TextEditingController l_name = TextEditingController();
+  final TextEditingController username = TextEditingController();
+  final TextEditingController email_id = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final TextEditingController cnf_password = TextEditingController();
+  final TextEditingController mobile_no = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,9 @@ class _SignUpscreen extends State<SignUpscreen> {
                   height: 40,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -73,6 +83,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: f_name,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -123,6 +134,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: l_name,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -173,6 +185,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: username,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -223,6 +236,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: email_id,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -268,6 +282,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: password,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -314,6 +329,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: cnf_password,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -360,6 +376,7 @@ class _SignUpscreen extends State<SignUpscreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(32.0))),
                     child: TextFormField(
+                      controller: mobile_no,
                       cursorColor: Colors.grey,
                       style: TextStyle(
                         color: Colors.black,
@@ -413,14 +430,63 @@ class _SignUpscreen extends State<SignUpscreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       elevation: 10,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("User Registered"),
-                            backgroundColor: Colors.grey,
-                          ),
-                        );
-                        Navigator.pushNamed(context, '/');
+                      onPressed: () async {
+                        FetchData fetch = FetchData();
+                        var result = await fetch.postUser(
+                            f_name.text,
+                            l_name.text,
+                            username.text,
+                            email_id.text,
+                            password.text,
+                            cnf_password.text,
+                            mobile_no.text);
+                        if (result.statusCode == 201 ||
+                            result.statusCode == 200) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("User Registered Please login."),
+                              backgroundColor: Colors.grey,
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        } else {
+                          if (result.body.contains('username')) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    jsonDecode(result.body)['username'][0]
+                                        .substring(19)),
+                                backgroundColor: Colors.grey,
+                              ),
+                            );
+                          }
+                          if (result.body.contains('email')) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    jsonDecode(result.body)['email_id'][0]),
+                                backgroundColor: Colors.grey,
+                              ),
+                            );
+                          }
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   SnackBar(
+                          //     content: Text(result.body),
+                          //     backgroundColor: Colors.grey,
+                          //   ),
+                          // );
+                          // for (int i = 0; i < jsn.length; i++){
+                          //
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     SnackBar(
+                          //       content: Text(jsnDecode[]),
+                          //       backgroundColor: Colors.grey,
+                          //     ),
+                          //   );
+                          // }
+                        }
+
+                        // Navigator.pushNamed(context, '/');
                       },
                       child: Text(
                         'Create Account',
