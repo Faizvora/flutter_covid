@@ -177,29 +177,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       if (result != null) {
                         File file = File(result.files.single.path);
                         FetchData fetch = FetchData();
-                        bool success =
-                            await fetch.postDoc(name, file.path, file);
-                        if (success) {
-                          Widget okbtn = TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'));
-                          AlertDialog alert = AlertDialog(
-                            title: Text('Result:'),
-                            content: Text('File uploaded successfully'),
-                            actions: [
-                              okbtn,
-                            ],
-                          );
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return alert;
-                              });
-                        } else {
-                          //
-                        }
+                        // bool success =
+                        //     await fetch.postDoc(name, file.path, file);
+                        // if (success) {
+                        //   Widget okbtn = TextButton(
+                        //       onPressed: () {
+                        //         Navigator.of(context).pop();
+                        //       },
+                        //       child: Text('OK'));
+                        //   AlertDialog alert = AlertDialog(
+                        //     title: Text('Result:'),
+                        //     content: Text('File uploaded successfully'),
+                        //     actions: [
+                        //       okbtn,
+                        //     ],
+                        //   );
+                        //   showDialog(
+                        //       context: context,
+                        //       builder: (BuildContext context) {
+                        //         return alert;
+                        //       });
+                        // } else {
+                        //   //
+                        // }
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(sb_pick_file);

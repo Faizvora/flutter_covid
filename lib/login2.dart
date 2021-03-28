@@ -1,6 +1,7 @@
 import 'package:covid_vaccine/welcome_screen-1.dart';
 import 'package:flutter/material.dart';
 import 'get_from_server.dart';
+import 'dashboard.dart';
 
 class Login extends StatelessWidget {
   get crossAxisAlignment => null;
@@ -103,23 +104,45 @@ class Login extends StatelessWidget {
                                     userController.text ||
                                 body['results'][i]['username'] ==
                                     userController.text) {
-                              // USER EXISTS
                               usere = true;
                               print(body['results'][i]['username']);
                               var usern = body['results'][i]['username'];
                               if (body['results'][i]['password'] ==
                                   passwordController.text) {
                                 // Navigator.pushNamed(context, '/welcome');
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => WelcomeScreen(
-                                          username: usern,
-                                        )));
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          WelcomeScreen(username: usern)),
+                                );
                               } else {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(wrong_password_sb);
                               }
                             }
                           }
+
+                          if (usere == false) {
+                            var adminBody = await fetchData.getAdminUser();
+                            for (int i = 0;
+                                i < adminBody['results'].length;
+                                i++) {
+                              if (adminBody['results'][i]['admin_user'] ==
+                                  userController.text) {
+                                usere = true;
+                                var usern =
+                                    adminBody['results'][i]['admin_user'];
+                                if (adminBody['results'][i]['admin_pass'] ==
+                                    passwordController.text) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => Dashboard()),
+                                  );
+                                }
+                              }
+                            }
+                          }
+
                           if (usere == false) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(username_ne_sb);

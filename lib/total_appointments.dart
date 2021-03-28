@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
 
-class TotalUsers extends StatefulWidget {
+class TotalAppointments extends StatefulWidget {
   @override
-  _TotalUsersState createState() => _TotalUsersState();
+  _TotalAppointmentsState createState() => _TotalAppointmentsState();
 }
 
-class _TotalUsersState extends State<TotalUsers> {
-  List username = <String>[
-    'Gordan',
-    'Barney',
-    'Tom',
-    'Mark',
-    'Peter',
-    'Shaun',
-    'Tim',
-    'Jerry',
-    'Rahul',
-    'Kiran',
-    'Morgan',
-    'Steve',
-    'Obama',
-    'Donald',
-    'Faiz',
-    'Arfat',
-    'Akram',
-    'Yakub',
-    'Sameen'
+class _TotalAppointmentsState extends State<TotalAppointments> {
+  List<String> appointments = [
+    'Appointment 1',
+    'Appointment 2',
+    'Appointment 3',
+    'Appointment 4',
+    'Appointment 5',
+    'Appointment 6',
+    'Appointment 7',
+    'Appointment 8',
   ];
 
   @override
@@ -33,20 +22,19 @@ class _TotalUsersState extends State<TotalUsers> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: Text("Total Users"),
+        title: Text('Total Appointments'),
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Colors.purple, Colors.indigo],
-          ),
-        ),
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Colors.purple, Colors.indigo],
+        )),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0),
           child: ListView.builder(
-            itemCount: username.length,
+            itemCount: appointments.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 2.0),
@@ -62,11 +50,13 @@ class _TotalUsersState extends State<TotalUsers> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text(username[index],
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                          )),
+                      child: Text(
+                        appointments[index],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
                 ),

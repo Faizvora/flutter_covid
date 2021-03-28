@@ -2,6 +2,7 @@ import 'package:covid_vaccine/get_from_server.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'appointment_details.dart';
+import 'login2.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final String username;
@@ -68,41 +69,49 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         title: Text(name),
         actions: [
           PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(
-                        value: 'Setting',
-                        child: Row(
-                          children: [
-                            Icon(Icons.settings, color: Colors.purple),
-                            Text(
-                              '  Settings',
-                              style: TextStyle(color: Colors.black),
-                            )
-                          ],
-                        )),
-                    PopupMenuItem(
-                        value: 'Help',
-                        child: Row(
-                          children: [
-                            Icon(Icons.help, color: Colors.purple),
-                            Text(
-                              '  Help',
-                              style: TextStyle(color: Colors.black),
-                            )
-                          ],
-                        )),
-                    PopupMenuItem(
-                        value: 'Logout',
-                        child: Row(
-                          children: [
-                            Icon(Icons.logout, color: Colors.purple),
-                            Text(
-                              '  Logout',
-                              style: TextStyle(color: Colors.black),
-                            )
-                          ],
-                        )),
-                  ])
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                  value: 'Setting',
+                  child: Row(
+                    children: [
+                      Icon(Icons.settings, color: Colors.purple),
+                      Text(
+                        '  Settings',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    ],
+                  )),
+              PopupMenuItem(
+                  value: 'Help',
+                  child: Row(
+                    children: [
+                      Icon(Icons.help, color: Colors.purple),
+                      Text(
+                        '  Help',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    ],
+                  )),
+              PopupMenuItem(
+                value: 'Logout',
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Login()));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.purple),
+                      Text(
+                        '  Logout',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
         ],
       ),
       body: Container(

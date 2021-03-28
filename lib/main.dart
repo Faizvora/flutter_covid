@@ -4,7 +4,7 @@ import 'login2.dart';
 import 'signup.dart';
 import 'forgot_password.dart';
 import 'get_from_server.dart';
-import 'appointment_details.dart';
+import 'dashboard.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => WelcomeScreen(username: 'username'),
         '/signup': (context) => SignUpscreen(),
         '/forgot': (context) => ForgotPassword(),
-        '/Appointmentdetails': (context) => AppointmentDetails(),
       },
     );
   }

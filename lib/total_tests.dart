@@ -1,52 +1,37 @@
 import 'package:flutter/material.dart';
 
-class TotalUsers extends StatefulWidget {
+class TotalTests extends StatefulWidget {
   @override
-  _TotalUsersState createState() => _TotalUsersState();
+  _TotalTestsState createState() => _TotalTestsState();
 }
 
-class _TotalUsersState extends State<TotalUsers> {
-  List username = <String>[
-    'Gordan',
-    'Barney',
-    'Tom',
-    'Mark',
-    'Peter',
-    'Shaun',
-    'Tim',
-    'Jerry',
-    'Rahul',
-    'Kiran',
-    'Morgan',
-    'Steve',
-    'Obama',
-    'Donald',
-    'Faiz',
-    'Arfat',
-    'Akram',
-    'Yakub',
-    'Sameen'
+class _TotalTestsState extends State<TotalTests> {
+  List<String> tests = [
+    'TEST',
+    'TEST',
+    'TEST',
+    'TEST',
+    'TEST',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Total Tests'),
         backgroundColor: Colors.purple,
-        title: Text("Total Users"),
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Colors.purple, Colors.indigo],
-          ),
-        ),
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Colors.purple, Colors.indigo],
+        )),
         child: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0),
           child: ListView.builder(
-            itemCount: username.length,
+            itemCount: tests.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 2.0),
@@ -62,11 +47,10 @@ class _TotalUsersState extends State<TotalUsers> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text(username[index],
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                          )),
+                      child: Text(
+                        tests[index],
+                        style: TextStyle(fontSize: 20.0, color: Colors.black),
+                      ),
                     ),
                   ),
                 ),

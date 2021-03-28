@@ -85,29 +85,29 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                       FetchData fetch = FetchData();
                       // todo: working further
 
-                      bool success = await fetch.postDoc(
-                          appointment['username'].toString(), file.path, file);
-                      if (success) {
-                        Widget okbtn = TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'));
-                        AlertDialog alert = AlertDialog(
-                          title: Text('Result:'),
-                          content: Text('File uploaded successfully'),
-                          actions: [
-                            okbtn,
-                          ],
-                        );
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return alert;
-                            });
-                      } else {
-                        //
-                      }
+                      // bool success = await fetch.postDoc(
+                      //     appointment['username'].toString(), file.path, file);
+                      // if (success) {
+                      //   Widget okbtn = TextButton(
+                      //       onPressed: () {
+                      //         Navigator.of(context).pop();
+                      //       },
+                      //       child: Text('OK'));
+                      //   AlertDialog alert = AlertDialog(
+                      //     title: Text('Result:'),
+                      //     content: Text('File uploaded successfully'),
+                      //     actions: [
+                      //       okbtn,
+                      //     ],
+                      //   );
+                      //   showDialog(
+                      //       context: context,
+                      //       builder: (BuildContext context) {
+                      //         return alert;
+                      //       });
+                      // } else {
+                      //   //
+                      // }
                     }
                   },
                   child: Text("Upload Documents"),

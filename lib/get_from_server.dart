@@ -8,14 +8,14 @@ class FetchData {
   String api_url = 'http://195.229.90.114:4444';
 
   Future<Map> getUser(String emailorusername) async {
-    String url = api_url + '/users_tbl/?format=json';
+    String url = api_url + '/users_tbl/' + emailorusername + '?format=json';
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
     return res;
   }
 
-  Future<Map> getAdminUser(String username) async {
-    String url = api_url + '/user_admin/?format=json';
+  Future<Map> getAdminUser() async {
+    String url = api_url + '/admin_tbl/?format=json';
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
     return res;
@@ -79,6 +79,20 @@ class FetchData {
     String url = api_url + "/users_tbl/?format=json";
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
-    print(res);
+    return res['results'].length;
+  }
+
+  Future<int> get_n_appointments() async {
+    String url = api_url + '/appointment/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res['results'].length;
+  }
+
+  Future<int> get_n_tests() async {
+    String url = api_url + '/test/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res['results'].length;
   }
 }
