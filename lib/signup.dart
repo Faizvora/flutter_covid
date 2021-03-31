@@ -21,12 +21,12 @@ class _SignUpscreen extends State<SignUpscreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.purple.shade700,
+      backgroundColor: Colors.indigo,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-            colors: [Colors.purpleAccent, Colors.purple.shade700],
+            colors: [Colors.purple, Colors.indigo],
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
           )),

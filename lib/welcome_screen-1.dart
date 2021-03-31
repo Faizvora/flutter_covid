@@ -66,38 +66,39 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: Text(name),
+        title: Text("Welcome, " + name),
         actions: [
           PopupMenuButton(
             itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                  value: 'Setting',
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings, color: Colors.purple),
-                      Text(
-                        '  Settings',
-                        style: TextStyle(color: Colors.black),
-                      )
-                    ],
-                  )),
-              PopupMenuItem(
-                  value: 'Help',
-                  child: Row(
-                    children: [
-                      Icon(Icons.help, color: Colors.purple),
-                      Text(
-                        '  Help',
-                        style: TextStyle(color: Colors.black),
-                      )
-                    ],
-                  )),
+              // PopupMenuItem(
+              //     value: 'Setting',
+              //     child: Row(
+              //       children: [
+              //         Icon(Icons.settings, color: Colors.purple),
+              //         Text(
+              //           '  Settings',
+              //           style: TextStyle(color: Colors.black),
+              //         )
+              //       ],
+              //     )),
+              // PopupMenuItem(
+              //     value: 'Help',
+              //     child: Row(
+              //       children: [
+              //         Icon(Icons.help, color: Colors.purple),
+              //         Text(
+              //           '  Help',
+              //           style: TextStyle(color: Colors.black),
+              //         )
+              //       ],
+              //     )),
               PopupMenuItem(
                 value: 'Logout',
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, '/');
+
                   },
                   child: Row(
                     children: [
@@ -187,6 +188,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                 ),
+                Center(
+                  child: ElevatedButton(onPressed: (){},
+                      child: Text("New Appointment")),
+                )
               ],
             )
           ],

@@ -11,39 +11,66 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
-  int user = 19;
-  int appointments = 8;
-  int documents = 10;
-  int tests = 5;
-
-  void set_all() async {
-    FetchData fetchData = FetchData();
-    this.user = await fetchData.get_n_users();
-    this.appointments = await fetchData.get_n_appointments();
-    this.tests = await fetchData.get_n_tests();
-    this.documents = await fetchData.get_n_tests();
-  }
+  int user ;
+  int appointments;
+  int documents;
+  int tests ;
 
   @override
   Widget build(BuildContext context) {
-    // set_all();
-
+    Map count =  ModalRoute.of(context).settings.arguments;
+   user = count['usercount'];
+   documents = count['docscount'];
+   tests = count['testcount'];
+   appointments = count['appointmentcount'];
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.purple,
+
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: Text('Dashboard'),
-      ),
+        title: Text("Dashboard"),
+        actions: [
+              PopupMenuItem(
+                value: 'Logout',
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigator.pushReplacementNamed(context, '/');
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.purple),
+                      Text(
+                        '  Logout',
+                        style: TextStyle(color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
       body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.purple, Colors.indigo],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+            )),
         padding: EdgeInsets.fromLTRB(20, 60, 2, 0),
         child: ListView(
           children: <Widget>[
             GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => TotalUsers()),
-                  );
+                onTap: () async  {
+                  FetchData fetchData = FetchData();
+                  var body = await fetchData.getAllUser();
+                  List list = body['results'];
+                  List namesList=<String>[];
+                  for(var i=0; i<list.length; i++){
+                    namesList.insert(i,body['results'][i]['username']);
+                  }
+                  Navigator.pushNamed(context, '/totalusers',arguments: {'namesList':namesList} );
+
                 },
                 child: Card(
                   margin: EdgeInsets.all(10),
@@ -63,10 +90,15 @@ class _Dashboard extends State<Dashboard> {
                 )),
             SizedBox(height: 10),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => TotalDoc()),
-                );
+              onTap: () async {
+                FetchData fetchData = FetchData();
+                var docdetails = await fetchData.getAlldocs();
+                List list = docdetails['results'];
+                List namesList=<String>[];
+                for(var i=0; i<list.length; i++){
+                  namesList.insert(i,docdetails['results'][i]['username']);
+                }
+                Navigator.pushNamed(context,'/totaldocs',arguments: {'namesList':namesList});
               },
               child: Card(
                 margin: EdgeInsets.all(10),
@@ -87,9 +119,10 @@ class _Dashboard extends State<Dashboard> {
             ),
             SizedBox(height: 10),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => TotalTests()));
+              onTap: () async{
+                FetchData fetchData = FetchData();
+                var body = await fetchData.get_tests();
+                Navigator.pushNamed(context, '/totaltest',arguments: {'totaltest':body['results']});
               },
               child: Card(
                 margin: EdgeInsets.all(10),
@@ -110,9 +143,16 @@ class _Dashboard extends State<Dashboard> {
             ),
             SizedBox(height: 10),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => TotalAppointments()));
+              onTap: ()async {
+                FetchData fetchData = FetchData();
+                var appointment_details = await fetchData.get_appointments();
+                var appointmentList = appointment_details['results'];
+                // Map list;
+                // for(var i=0; i<appointmentList.length; i++) {
+                //   list.addEntries(appointment_details['results'][i]);
+                // }
+
+                Navigator.pushNamed(context, '/totalappointments',arguments: {'appointment_details':appointmentList});
               },
               child: Card(
                 margin: EdgeInsets.all(10),

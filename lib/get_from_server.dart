@@ -14,6 +14,13 @@ class FetchData {
     return res;
   }
 
+  Future<Map> getAllUser() async {
+    String url = api_url + '/users_tbl/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res;
+  }
+
   Future<Map> getAdminUser() async {
     String url = api_url + '/admin_tbl/?format=json';
     http.Response resp = await http.get(Uri.parse(url));
@@ -21,8 +28,7 @@ class FetchData {
     return res;
   }
 
-  Future<http.Response> postUser(
-      String f_name,
+  Future<http.Response> postUser(String f_name,
       String l_name,
       String u_name,
       String email_id,
@@ -79,7 +85,7 @@ class FetchData {
     String url = api_url + "/users_tbl/?format=json";
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
-    return res['results'].length;
+    return res['count'];
   }
 
   Future<int> get_n_appointments() async {
@@ -94,5 +100,19 @@ class FetchData {
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
     return res['results'].length;
+  }
+
+  Future<int> get_n_docs() async {
+    String url = api_url + '/upload/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res['results'].length;
+  }
+
+  Future<Map> getAlldocs() async {
+    String url = api_url + '/upload/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res;
   }
 }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatelessWidget {
-  get crossAxisAlignment => null;
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
 
+class _LoginState extends State<Login> {
+  bool status = true;
+  get crossAxisAlignment => null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +41,11 @@ class Login extends StatelessWidget {
                     child: Column(children: <Widget>[
                       TextField(
                           decoration: InputDecoration(
-                        hintText: "Enter your Email",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.email),
-                      ))
+                            hintText: "Enter your Email",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: InputBorder.none,
+                            prefixIcon: Icon(Icons.email),
+                          ))
                     ]),
                   ),
                   SizedBox(height: 10),
@@ -55,7 +60,15 @@ class Login extends StatelessWidget {
                           hintStyle: TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.lock),
-                          suffixIcon: Icon(Icons.visibility_off),
+                          suffixIcon: IconButton(
+                              color: Colors.white,
+                              icon: status?Icon(Icons.visibility_off):Icon(Icons.visibility),
+                              onPressed: (){
+                                setState(() {
+                                  status = !status;
+                                });
+                              }
+                          ),
                         ),
                         obscureText: true,
                       )
@@ -101,18 +114,18 @@ class Login extends StatelessWidget {
                   ),
                   SizedBox(height: 30),
                   Center(
-                      child: RaisedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/signup');
-                          },
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Text("Sign up",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),),),),
+                    child: RaisedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text("Sign up",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),),),),
                   SizedBox(height: 200)
                 ],
               ),
@@ -123,3 +136,4 @@ class Login extends StatelessWidget {
     );
   }
 }
+

@@ -112,6 +112,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                   },
                   child: Text("Upload Documents"),
                 ),
+
               ],
             )
           ],

@@ -6,12 +6,11 @@ class TotalDoc extends StatefulWidget {
 }
 
 class _TotalDocState extends State<TotalDoc> {
-   List documents =<String>[
-      'Doc1','Doc2','Doc3','Doc4','Doc5','Doc6','Doc7','Doc8',
-      'Doc9','Doc10'
-    ];
+   List documents =<String>[];
     @override
     Widget build(BuildContext context) {
+      Map data = ModalRoute.of(context).settings.arguments;
+      documents = data['namesList'];
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple,
@@ -39,19 +38,29 @@ class _TotalDocState extends State<TotalDoc> {
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       elevation: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(documents[index],
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black,
-                              )),
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(12)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(documents[index],
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right:10.0),
+                            child: ElevatedButton(onPressed:(){},
+                                child:Text('View Document')),
+                          ),
+                        ],
                       ),
                     ),
                   );
