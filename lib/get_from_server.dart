@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class FetchData {
   String api_url = 'http://195.229.90.114:4444';
@@ -16,6 +17,20 @@ class FetchData {
 
   Future<Map> getAllUser() async {
     String url = api_url + '/users_tbl/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res;
+  }
+
+  Future<Map> getAppointmentType() async {
+    String url = api_url + '/appointment_type/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res;
+  }
+
+  Future<Map> getCreatedBy() async {
+    String url = api_url + '/admin_tbl/?format=json';
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
     return res;
@@ -66,6 +81,52 @@ class FetchData {
       return false;
     }
   }
+
+  Future<http.Response> postAppointment(
+      String user_name,
+      String appointment_type,
+      String appointment_date_time,
+      String created_date,
+      String created_by,
+      ) async {
+    DateTime dateTime = DateTime.tryParse(appointment_date_time);
+    DateTime dateTime1 = DateTime.tryParse(created_date);
+    print(dateTime);
+    print(dateTime1);
+
+    String url = api_url + '/appointment/';
+    Map<String, String> headers = {'Content-type': 'application/json'};
+    Map data = {
+      'username': user_name,
+      'appointment_type': appointment_type,
+      'appointment_date_time': appointment_date_time,
+      'created_date': created_date,
+      'created_by': created_by,};
+      String body = json.encode(data);
+
+      return await http.post(Uri.parse(url), headers: headers, body: body);
+    }
+
+  Future<http.Response> postTest(String username,
+      String test_type,
+      String file_upload,
+      String test_date,
+      String created_by,
+      bool is_active,
+     ) async {
+        String url = api_url + '/test/';
+            Map<String, String> headers = {"Content-type": 'application/json'};
+            Map data = {
+              "username": username,
+              "test_type": test_type,
+              "file_upload": file_upload,
+              "test_date": test_date,
+              "created_by": created_by,
+              "is_active": is_active,};
+            String body = json.encode(data);
+            return await http.post(Uri.parse(url), headers: headers, body: body);
+    }
+
 
   Future<Map> get_appointments() async {
     String url = api_url + '/appointment/?format=json';
