@@ -7,6 +7,20 @@ import 'package:intl/intl.dart';
 
 class FetchData {
   String api_url = 'http://195.229.90.114:4444';
+  // String api_url = 'http://10.0.2.2:8000';
+
+  Future<String> getAppointmentType()async{
+    int type;
+    String url = api_url + '/appointment_type/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    List<String> types = [];
+    
+    for(var i=0; i<res['count'];i++){
+      types.add(res['results'][i]['appointment_type']);
+    }
+    return types[type];
+  }
 
   Future<Map> getUser(String emailorusername) async {
     String url = api_url + '/users_tbl/' + emailorusername + '?format=json';
@@ -17,13 +31,6 @@ class FetchData {
 
   Future<Map> getAllUser() async {
     String url = api_url + '/users_tbl/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<Map> getAppointmentType() async {
-    String url = api_url + '/appointment_type/?format=json';
     http.Response resp = await http.get(Uri.parse(url));
     Map res = jsonDecode(resp.body);
     return res;
@@ -84,26 +91,23 @@ class FetchData {
 
   Future<http.Response> postAppointment(
       String user_name,
-      String appointment_type,
+      int appointment_type,
       String appointment_date_time,
-      String created_date,
-      String created_by,
+      String created_date_time,
+      int created_by,
       ) async {
-    DateTime dateTime = DateTime.tryParse(appointment_date_time);
-    DateTime dateTime1 = DateTime.tryParse(created_date);
-    print(dateTime);
-    print(dateTime1);
 
     String url = api_url + '/appointment/';
-    Map<String, String> headers = {'Content-type': 'application/json'};
+    Map<String, String> headers = {"Content-type": 'application/json'};
     Map data = {
       'username': user_name,
       'appointment_type': appointment_type,
       'appointment_date_time': appointment_date_time,
-      'created_date': created_date,
+      'created_date': created_date_time,
       'created_by': created_by,};
-      String body = json.encode(data);
 
+      String body = json.encode(data);
+      print(body);
       return await http.post(Uri.parse(url), headers: headers, body: body);
     }
 

@@ -1,26 +1,19 @@
+import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/material.dart';
 import 'get_from_server.dart';
-
+import 'package:intl/intl.dart';
 class CreateAppointment extends StatefulWidget {
   @override
   _CreateAppointmentState createState() => _CreateAppointmentState();
 }
 
 class _CreateAppointmentState extends State<CreateAppointment> {
-  DateTime pickedDateA;
-  TimeOfDay timeA;
-  DateTime pickedDateC;
-  TimeOfDay timeC;
-   // ye variable hai create by ka
 
-  @override
-  void initState(){
-    super.initState();
-    pickedDateA = DateTime.now();
-    timeA = TimeOfDay.now();
-    pickedDateC = DateTime.now();
-    timeC = TimeOfDay.now();
-  }
+  DateTime pickedDateA = DateTime.now();
+  TimeOfDay timeA = TimeOfDay.now();
+  DateTime pickedDateC = DateTime.now();
+  TimeOfDay timeC = TimeOfDay.now();
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
 
   String valueChoose;
   String valueChoose1;
@@ -31,6 +24,8 @@ class _CreateAppointmentState extends State<CreateAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    String appointment_date_time = formatter.format(pickedDateA)+'T'+timeA.format(context).substring(0,4)+'Z';
+    String created_date_time = formatter.format(pickedDateC)+'T'+timeC.format(context).substring(0,4)+'Z';
     Map data =  ModalRoute.of(context).settings.arguments;
     ListItem = data['userlist'];
     ListItem1 = data['appList'];
@@ -52,14 +47,6 @@ class _CreateAppointmentState extends State<CreateAppointment> {
           child: Column(
             children:<Widget> [
 
-              // SizedBox(
-              //   height:50,
-              // ),
-
-              // ),
-
-              //username:
-
               Padding(
                 padding: const EdgeInsets.only(top: 12.0 , left: 16.0 ,bottom: 1.0),
                 child: Container(
@@ -80,39 +67,41 @@ class _CreateAppointmentState extends State<CreateAppointment> {
                     border: Border.all(color: Colors.white,width: 1),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: DropdownButton(
-                    hint: Text('Select User',
-                      style: TextStyle(color: Colors.black),),
-                    dropdownColor: Colors.white,
-                    icon: Icon(Icons.arrow_drop_down),
-                    iconSize: 36,
-                    isExpanded: true,
-                    underline: SizedBox(),
-                    // style: TextStyle(
-                    //
-                    // ),
-                    value: valueChoose,
-                    onChanged: (newValue) {
-                      setState(() {
-                        valueChoose=newValue;
-                        print(valueChoose);
-                      });
+                  child:DropDownField(
+                    onValueChanged: (value) {
+                          setState(() {
+                            valueChoose = value;
+                          });
+
                     },
-                    items: ListItem.map((valueItem){
-                      return DropdownMenuItem(
-                        value:valueItem,
-                        child: Text(valueItem),);
-                    }
-                    ).toList(),
-                  ),
+                    value: valueChoose,
+                    required: false,
+                    // hintText: 'Choose a country',
+                    // labelText: 'Country',
+                    items: ListItem,)
+                  // DropdownButton(
+                  //   hint: Text('Select User',
+                  //     style: TextStyle(color: Colors.black),),
+                  //   dropdownColor: Colors.white,
+                  //   icon: Icon(Icons.arrow_drop_down),
+                  //   iconSize: 36,
+                  //   isExpanded: true,
+                  //   underline: SizedBox(),
+                  //
+                  //   value: valueChoose,
+                  //   onChanged: (newValue) {
+                  //     setState(() {
+                  //       valueChoose=newValue;
+                  //     });
+                  //   },
+                  //   items: ListItem.map((valueItem){
+                  //     return DropdownMenuItem(
+                  //       value:valueItem,
+                  //       child: Text(valueItem),);
+                  //   }
+                  //   ).toList(),
+                  // ),
                 ), ),
-
-              // SizedBox(
-              //   height:10,
-              // ),
-
-
-              //Appointment Date Time
 
               Padding(
                 padding: const EdgeInsets.only(top: 8.0 , left: 16.0, bottom: 6.0),
@@ -197,7 +186,6 @@ class _CreateAppointmentState extends State<CreateAppointment> {
                     onChanged: (newValue1) {
                       setState(() {
                         valueChoose1=newValue1;
-                        print(valueChoose1);
                       });
                     },
                     items: ListItem1.map((valueItem1){
@@ -268,9 +256,6 @@ class _CreateAppointmentState extends State<CreateAppointment> {
                 ),
               ),
 
-
-
-// Button
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Align(
@@ -282,19 +267,23 @@ class _CreateAppointmentState extends State<CreateAppointment> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular((20),),),),
                       onPressed: () async{
                         FetchData fetch = FetchData();
-                        var result = await fetch.postAppointment(valueChoose, valueChoose1, pickedDateC.toString(), timeC.toString(), username);
-                        if (result.statusCode == 201 ||
-                            result.statusCode == 200) {
+                        int appointment_type;
+                        valueChoose1=="RC - PTR"? appointment_type = 1:appointment_type = 2;
+                        print("Username");
+                        print(valueChoose);
+                        var result = await fetch.postAppointment(valueChoose, appointment_type, appointment_date_time,created_date_time , 1);
+                        if (result.statusCode == 201 || result.statusCode == 200) {
+                          Navigator.pop(context,'/totalappointments');
+                        }
+                        else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text("User Registered Please login."),
+                              content: Text("Something went wrong !!!"),
                               backgroundColor: Colors.grey,
                             ),
                           );
-
+                          print( 'failed  ' + result.statusCode.toString());
                         }
-                        else print( 'failed' + result.statusCode.toString());
-
                       },
                       child: const Text('Make an Appointment', style: TextStyle(fontSize: 20)),
                       color: Colors.white,
@@ -311,14 +300,18 @@ class _CreateAppointmentState extends State<CreateAppointment> {
 
   }
 
-  //Appointment Date time
-
+  // //Appointment Date time
+  // final DateTime picked = await showDatePicker(
+  // context: context,
+  // initialDate: DateTime.now(),
+  // firstDate: DateTime.now().subtract(Duration(days: 1)),
+  // lastDate: DateTime(2100),
+  // );
   _pickDate() async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(DateTime
-          .now()
-          .year - 5),
+      firstDate: DateTime.now()
+          .subtract(Duration(days: 0)),
       lastDate: DateTime(DateTime
           .now()
           .year + 5),
@@ -328,7 +321,6 @@ class _CreateAppointmentState extends State<CreateAppointment> {
     if (date != null)
       setState(() {
         pickedDateA = date;
-        print(pickedDateA);
       });
   }
   _pickTime() async {
@@ -348,9 +340,8 @@ class _CreateAppointmentState extends State<CreateAppointment> {
   _pickDate1() async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(DateTime
-          .now()
-          .year - 5),
+      firstDate: DateTime.now()
+          .subtract(Duration(days: 1)),
       lastDate: DateTime(DateTime
           .now()
           .year + 5),
@@ -360,9 +351,10 @@ class _CreateAppointmentState extends State<CreateAppointment> {
     if (date != null)
       setState(() {
         pickedDateC = date;
-        print(pickedDateC);
       });
   }
+
+
   _pickTime1() async {
     TimeOfDay t = await showTimePicker(
       context: context,
@@ -372,7 +364,6 @@ class _CreateAppointmentState extends State<CreateAppointment> {
     if (t != null)
       setState(() {
         timeC = t;
-        print(timeC);
       });
   }
 

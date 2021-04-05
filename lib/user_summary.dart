@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'get_from_server.dart';
 import 'total_users.dart';
+import 'package:intl/intl.dart';
 
 class SummaryScreen extends StatefulWidget {
   @override
@@ -19,6 +20,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
   var userappointments_created_date;
   var userappointments_created_by;
 
+  String userappointments_date;
+  String userappointments_time;
+
+  String created_appointments_date;
+  String created_appointments_time;
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +39,22 @@ class _SummaryScreenState extends State<SummaryScreen> {
     userappointments_type = data['userappointments_type'];
     userappointments_created_date = data['userappointments_created_date'];
     userappointments_created_by = data['userappointments_created_by'];
+    print(userappointments_date_time);
+    print(userappointments_created_date);
 
-    print(data);
+    if(userappointments_date_time != null){
+
+      userappointments_date = userappointments_date_time.toString().substring(0,10);
+      DateTime now = DateTime.parse(userappointments_date_time);
+      userappointments_time = DateFormat.jm().format(now);
+
+      created_appointments_date = userappointments_created_date.toString().substring(0,10);
+      DateTime now1 = DateTime.parse(userappointments_created_date);
+      created_appointments_time = DateFormat.jm().format(now1);
+
+      //userappointments_type = userappointments_type.toString() == 1.toString()?'RC-PTR':'Vaccine';
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
@@ -111,15 +132,42 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
              child: Padding(
-               padding: const EdgeInsets.all(8.0),
+               padding: const EdgeInsets.all(10.0),
                child: Container(
                  child: userappointments_date_time==null?Text('No Appointments'):
                  Column(
+
                    children: [
-                     Text('Appointment date time : ' + userappointments_date_time),
-                     Text('Appointment type : ' + userappointments_type.toString() == 1.toString()?'Vaccine':'PC-PTR'),
-                     Text('Appointment created date : ' + userappointments_created_date),
-                     Text('Appointment created by : ' + userappointments_created_by.toString() == 1.toString()?'Admin':'User'),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment date time : ' + userappointments_date ,
+                       style: TextStyle(fontSize: 18.0),),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment time : ' + userappointments_time,
+                         style: TextStyle(fontSize: 18.0),),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment type : ' + userappointments_type.toString(),
+                         style: TextStyle(fontSize: 18.0),),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment created date : ' + created_appointments_date,
+                         style: TextStyle(fontSize: 18.0),),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment created time : ' +created_appointments_time,
+                         style: TextStyle(fontSize: 18.0),),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.only(top:8.0),
+                       child: Text('Appointment created by : ' + userappointments_created_by,
+                         style: TextStyle(fontSize: 18.0),),
+                     ),
                    ],
                  ),
                ),

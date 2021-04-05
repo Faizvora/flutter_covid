@@ -5,6 +5,7 @@ import 'package:covid_vaccine/total_users.dart';
 import 'package:covid_vaccine/user_summary.dart';
 import 'package:flutter/material.dart';
 import 'appointment_details.dart';
+import 'create_appointment.dart';
 import 'welcome_screen-1.dart';
 import 'login2.dart';
 import 'signup.dart';
@@ -25,16 +26,17 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Login(),
-        '/welcome': (context) => WelcomeScreen(username: 'username'),
+        '/welcome': (context) => WelcomeScreen(),
+        '/dashboard':(context) => Dashboard(),
         '/signup': (context) => SignUpscreen(),
         '/forgot': (context) => ForgotPassword(),
         '/Appointmentdetails':(context) => AppointmentDetails(),
-        '/dashboard':(context) => Dashboard(),
         '/totalusers':(context) => TotalUsers(),
         '/totaldocs':(context) => TotalDoc(),
         '/totalappointments':(context) => TotalAppointments(),
         '/totaltest':(context) =>TotalTests(),
         '/usersummary':(context) =>SummaryScreen(),
+        '/createappointment':(context) =>CreateAppointment(),
       },
     );
   }

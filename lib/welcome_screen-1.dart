@@ -3,66 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'appointment_details.dart';
 import 'login2.dart';
-
+import 'package:intl/intl.dart';
 class WelcomeScreen extends StatefulWidget {
-  final String username;
-  WelcomeScreen({Key key, this.username}) : super(key: key);
+  //final String username;
+  // WelcomeScreen({Key key, this.username, Key key1, this.futureList,Key key3, this.pastList}) : super(key: key,key1: key1 ,key3: key3 );
 
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  @override
-  List<String> appointment = [
-    "Appointment 1",
-    "Appointment 2",
-    "Appointment 3",
-  ];
-
+  List futureList=[];
+  List pastList=[];
+  String future_appointment_type;
+  String past_appointment_type;
   var body;
 
-  List<String> get_appointment_value(int app_no) {
-    List<String> temp = [];
-    switch (app_no) {
-      case 1:
-        {
-          temp.add('Vaccine');
-        }
-        break;
-      case 2:
-        {
-          temp.add('RP-CTR');
-        }
-        break;
-      default:
-        {
-          temp.add('ALL DONE');
-        }
-    }
-  }
 
-  void get_apps() async {
-    FetchData fetch = FetchData();
-    body = await fetch.get_appointments();
-    // print(body['results'][0]);
-
-    for (int i = 0; i < body['results'].length; i++) {
-      var data = body['results'][i];
-      if (data['username'] == widget.username) {
-        print(body['results'][i]);
-        appointment = get_appointment_value(data['appointment_type']);
-      }
-    }
-  }
-
+  @override
   void initState() {
     super.initState();
-    // get_apps();
+
   }
 
   Widget build(BuildContext context) {
-    var name = widget.username;
+    print('build');
+    Map data = ModalRoute.of(context).settings.arguments;
+    print(data);
+    futureList = data['futureList'];
+    pastList = data['pastList'];
+
+    for(var i=0; i<futureList.length; i++){
+      // appointment_type = futureList[i]['appointment_type']==1?"Vaccine":"RT-PCR";
+      future_appointment_type = futureList[i]['appointment_type'].toString();
+    }
+
+    for(var i=0; i<pastList.length; i++) {
+      past_appointment_type = pastList[i]['appointment_type'].toString();
+    }
+
+    var name = data['username'];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
@@ -70,35 +50,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         actions: [
           PopupMenuButton(
             itemBuilder: (BuildContext context) => [
-              // PopupMenuItem(
-              //     value: 'Setting',
-              //     child: Row(
-              //       children: [
-              //         Icon(Icons.settings, color: Colors.purple),
-              //         Text(
-              //           '  Settings',
-              //           style: TextStyle(color: Colors.black),
-              //         )
-              //       ],
-              //     )),
-              // PopupMenuItem(
-              //     value: 'Help',
-              //     child: Row(
-              //       children: [
-              //         Icon(Icons.help, color: Colors.purple),
-              //         Text(
-              //           '  Help',
-              //           style: TextStyle(color: Colors.black),
-              //         )
-              //       ],
-              //     )),
               PopupMenuItem(
                 value: 'Logout',
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, '/');
-
                   },
                   child: Row(
                     children: [
@@ -132,20 +89,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 15.0),
                   child: Text(
-                    'Appointments',
+                    'Future appointments',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 30.0),
                   ),
                 ),
-                SizedBox(
-                  height: 600,
+                 SizedBox(
+                  height:200,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         top: 8.0, left: 10.0, right: 10.0),
                     child: ListView.builder(
-                      itemCount: appointment.length,
+                      itemCount: futureList.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 2.0),
@@ -154,8 +111,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               Navigator.pushNamed(
                                   context, '/Appointmentdetails',
                                   arguments: {
-                                    'appointment': appointment[index],
-                                    'username': widget.username,
+                                    'appointment': futureList[index],
+                                    'username': name,
                                   });
                             },
                             child: Card(
@@ -172,12 +129,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: Text(
-                                    appointment[index],
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: Colors.black,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+
+                                        future_appointment_type + ' |  ',
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        futureList[index]['appointment_date_time'].toString().substring(0,10),
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -188,10 +157,76 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                 ),
-                Center(
-                  child: ElevatedButton(onPressed: (){},
-                      child: Text("New Appointment")),
-                )
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0, left: 15.0),
+                  child: Text(
+                    'Past appointments',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30.0),
+                  ),
+                ),
+                SizedBox(
+                  height:200,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, left: 10.0, right: 10.0),
+                    child: ListView.builder(
+                      itemCount: pastList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 2.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, '/Appointmentdetails',
+                                  arguments: {
+                                    'appointment': pastList[index],
+                                    'username': name,
+                                  });
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(12)),
+                              ),
+                              elevation: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        past_appointment_type+ ' |  ',
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        pastList[index]['appointment_date_time'].toString().substring(0,10),
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             )
           ],

@@ -1,5 +1,6 @@
 import 'package:covid_vaccine/welcome_screen-1.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'get_from_server.dart';
 import 'dashboard.dart';
 
@@ -112,6 +113,9 @@ class _LoginState extends State<Login> {
                                     passwordController.text != '') {
                                   FetchData fetchData = FetchData();
                                   var body = await fetchData.getUser('');
+
+                                  // print(result);
+
                                   for (int i = 0; i < body['results'].length; i++) {
                                     if (body['results'][i]['email_id'] ==
                                         userController.text ||
@@ -120,14 +124,41 @@ class _LoginState extends State<Login> {
                                       usere = true;
                                       print(body['results'][i]['username']);
                                       var usern = body['results'][i]['username'];
+
+
                                       if (body['results'][i]['password'] ==
                                           passwordController.text) {
-                                        // Navigator.pushNamed(context, '/welcome');
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  WelcomeScreen(username: usern)),
-                                        );
+                                        FetchData fetchData1 = FetchData();
+                                        var body1 = await fetchData1.get_appointments();
+
+                                        List futureList=[];
+                                        List pastList=[];
+
+                                        final DateTime now = DateTime.now();
+                                        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+                                        String formatted = formatter.format(now);
+                                        print(formatted);
+                                        List result = body1['results'];
+
+                                        for(var i=0; i<result.length; i++){
+
+                                          if(result[i]['username'] == usern){
+                                            DateTime temp = DateTime.tryParse(result[i]['appointment_date_time']);
+                                            if(temp.compareTo(now)>0){
+                                              futureList.add(result[i]);
+                                            }
+                                            else{
+                                              pastList.add(result[i]);
+                                            }
+                                          }
+                                          print(result[i]['username']);
+                                        }
+
+                                        print("FL");
+                                        print(futureList);
+                                        print("PL");
+                                        print(pastList);
+                                        Navigator.pushReplacementNamed(context,'/welcome',arguments:{'username':usern,'futureList':futureList,'pastList':pastList});
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(wrong_password_sb);
@@ -154,7 +185,7 @@ class _LoginState extends State<Login> {
                                           var testcount = await fetchData.get_n_tests();
                                           var appointmentcount = await fetchData.get_n_appointments();
 
-                                          Navigator.pushNamed(context,'/dashboard',arguments: {'usercount':usercount,
+                                          Navigator.pushNamed(context,'/dashboard',arguments: {'username':usern,'usercount':usercount,
                                           'docscount':docscount,'testcount':testcount,'appointmentcount':appointmentcount});
 
                                         }

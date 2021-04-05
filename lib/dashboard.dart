@@ -15,10 +15,11 @@ class _Dashboard extends State<Dashboard> {
   int appointments;
   int documents;
   int tests ;
-
+  String username;
   @override
   Widget build(BuildContext context) {
     Map count =  ModalRoute.of(context).settings.arguments;
+    username = count['username'];
    user = count['usercount'];
    documents = count['docscount'];
    tests = count['testcount'];
@@ -69,7 +70,7 @@ class _Dashboard extends State<Dashboard> {
                   for(var i=0; i<list.length; i++){
                     namesList.insert(i,body['results'][i]['username']);
                   }
-                  Navigator.pushNamed(context, '/totalusers',arguments: {'namesList':namesList} );
+                  Navigator.pushNamed(context, '/totalusers',arguments: {'namesList':namesList,'username':username} );
 
                 },
                 child: Card(
@@ -122,7 +123,7 @@ class _Dashboard extends State<Dashboard> {
               onTap: () async{
                 FetchData fetchData = FetchData();
                 var body = await fetchData.get_tests();
-                Navigator.pushNamed(context, '/totaltest',arguments: {'totaltest':body['results']});
+                Navigator.pushNamed(context, '/totaltest',arguments: {'totaltest':body['results'],'username':username});
               },
               child: Card(
                 margin: EdgeInsets.all(10),
@@ -152,7 +153,7 @@ class _Dashboard extends State<Dashboard> {
                 //   list.addEntries(appointment_details['results'][i]);
                 // }
 
-                Navigator.pushNamed(context, '/totalappointments',arguments: {'appointment_details':appointmentList});
+                Navigator.pushNamed(context, '/totalappointments',arguments: {'appointment_details':appointmentList,'username':username});
               },
               child: Card(
                 margin: EdgeInsets.all(10),
@@ -169,6 +170,9 @@ class _Dashboard extends State<Dashboard> {
                 ),
               ),
             ),
+
+
+
           ],
         ),
       ),
