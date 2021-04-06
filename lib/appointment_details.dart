@@ -19,7 +19,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
     String username = data['username'];
     Map details = data['appointment'];
 
-    String appointment_type = details['appointment_type'].toString();
+    String appointment_type = details['appointment_type'].toString().contains('1')?'Vaccine':'RC-PTR';
 
 
     DateTime now = DateTime.parse(details['appointment_date_time']);
@@ -152,36 +152,48 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    FilePickerResult result =
-                        await FilePicker.platform.pickFiles();
+                    FilePickerResult result = await FilePicker.platform.pickFiles();
                     if (result != null) {
                       File file = File(result.files.single.path);
                       FetchData fetch = FetchData();
-                      // todo: working further
-
-                      // bool success = await fetch.postDoc(
-                      //     appointment['username'].toString(), file.path, file);
-                      // if (success) {
-                      //   Widget okbtn = TextButton(
-                      //       onPressed: () {
-                      //         Navigator.of(context).pop();
-                      //       },
-                      //       child: Text('OK'));
-                      //   AlertDialog alert = AlertDialog(
-                      //     title: Text('Result:'),
-                      //     content: Text('File uploaded successfully'),
-                      //     actions: [
-                      //       okbtn,
-                      //     ],
-                      //   );
-                      //   showDialog(
-                      //       context: context,
-                      //       builder: (BuildContext context) {
-                      //         return alert;
-                      //       });
-                      // } else {
-                      //   //
-                      // }
+                      bool success = await fetch.postDoc(details['username'].toString(),details['appointment_type'].toString(),details['appointment_date_time'].toString(),details['created_date'].toString(),details['created_by'].toString(),"true",file.path, file);
+                      if (success) {
+                        Widget okbtn = TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'));
+                        AlertDialog alert = AlertDialog(
+                          title: Text('Result:'),
+                          content: Text('File uploaded successfully'),
+                          actions: [
+                            okbtn,
+                          ],
+                        );
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            });
+                      } else {
+                        Widget okbtn = TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'));
+                        AlertDialog alert = AlertDialog(
+                          title: Text('Result:'),
+                          content: Text('File uploaded Failed'),
+                          actions: [
+                            okbtn
+                          ],
+                        );
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            });
+                      }
                     }
                   },
                   child: Text("Upload Documents"),

@@ -34,12 +34,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     pastList = data['pastList'];
 
     for(var i=0; i<futureList.length; i++){
-      // appointment_type = futureList[i]['appointment_type']==1?"Vaccine":"RT-PCR";
-      future_appointment_type = futureList[i]['appointment_type'].toString();
+
+      future_appointment_type = futureList[i]['appointment_type'].toString().contains('1')?'Vaccine':'RC-PTR';
     }
 
     for(var i=0; i<pastList.length; i++) {
-      past_appointment_type = pastList[i]['appointment_type'].toString();
+      past_appointment_type = pastList[i]['appointment_type'].toString().contains('1')?'Vaccine':'RC-PTR';
     }
 
     var name = data['username'];

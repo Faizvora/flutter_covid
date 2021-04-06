@@ -9,19 +9,6 @@ class FetchData {
   String api_url = 'http://195.229.90.114:4444';
   // String api_url = 'http://10.0.2.2:8000';
 
-  Future<String> getAppointmentType()async{
-    int type;
-    String url = api_url + '/appointment_type/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    List<String> types = [];
-    
-    for(var i=0; i<res['count'];i++){
-      types.add(res['results'][i]['appointment_type']);
-    }
-    return types[type];
-  }
-
   Future<Map> getUser(String emailorusername) async {
     String url = api_url + '/users_tbl/' + emailorusername + '?format=json';
     http.Response resp = await http.get(Uri.parse(url));
@@ -73,18 +60,22 @@ class FetchData {
     }
   }
 
-  Future<bool> postDoc(String username, String test_type, String test_date,
-      String created_by, String filepath, File file) async {
-    String url = api_url + '/upload/';
-
+  Future<bool> postDoc(String username, String test_type, String test_date,String created_date ,String created_by,String status, String filepath, File file) async {
+    String url = api_url + '/test/';
     var request = http.MultipartRequest('POST', Uri.parse(url))
       ..fields['username'] = username
-      ..files.add(await http.MultipartFile.fromPath('file_upload', file.path));
+      ..fields['test_type'] = test_type
+      ..files.add(await http.MultipartFile.fromPath('file_upload',file.path))
+      ..fields['test_date'] = test_date
+      ..fields['created_date'] = created_date
+      ..fields['created_by'] = created_by
+      ..fields['is_active'] = status;
     var resp = await request.send();
 
     if (resp.statusCode == 200 || resp.statusCode == 201) {
       return true;
     } else {
+      print(resp.statusCode);
       return false;
     }
   }
@@ -180,4 +171,23 @@ class FetchData {
     Map res = jsonDecode(resp.body);
     return res;
   }
+
+  Future<Map> getAppointmentType()async{
+    String url = api_url + '/appointment_type/?format=json';
+    http.Response resp = await http.get(Uri.parse(url));
+    Map res = jsonDecode(resp.body);
+    return res;
+  }
+
+// Future<String> getAppointmentType(int type)async{
+//   String url = api_url + '/appointment_type/?format=json';
+//   http.Response resp = await http.get(Uri.parse(url));
+//   Map res = jsonDecode(resp.body);
+//   List<String> types = [];
+//
+//   for(var i=0; i<res['count'];i++){
+//     types.add(res['results'][i]['appointment_type']);
+//   }
+//   return types[type];
+// }
 }
