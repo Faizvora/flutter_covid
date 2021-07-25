@@ -1,181 +1,281 @@
-import 'package:covid_vaccine/get_from_server.dart';
+import 'package:covid_tracker/get_from_server.dart';
 import 'package:flutter/material.dart';
-import 'total_doc.dart';
-import 'total_users.dart';
-import 'total_tests.dart';
-import 'total_appointments.dart';
+import 'set_vars.dart';
+import 'package:pie_chart/pie_chart.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';  
 
-class Dashboard extends StatefulWidget {
+class DashboardScreen extends StatefulWidget {
   @override
-  _Dashboard createState() => _Dashboard();
+  _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _Dashboard extends State<Dashboard> {
-  int user ;
-  int appointments;
+class _DashboardScreenState extends State<DashboardScreen> {
+  int user;
   int documents;
-  int tests ;
-  String username;
+
+  Map<String, double> rcptrDataMap = {};
+
+  static const spinkit = SpinKitCubeGrid(color: Colors.white, size: 50.0);
+
+  Map<String, double> vaccineDataMap = {};
+
+  Future<void> loadData() async {
+    List countData = await setUserDoc();
+    user = countData[0];
+    documents = countData[1];
+    List rcptrPiechartData = await setRCPTRPieChart('/rcptr_test/', 'r_result');
+    double rcptrNegative = rcptrPiechartData[0].length.toDouble();
+    rcptrDataMap = {
+      "Red Zone": user.toDouble() - rcptrNegative,
+      "Green Zone": rcptrNegative,
+    };
+
+    List vaccinePiechartData = await setVaccinePieChart('/vaccine_test/', 'dose');
+    print(vaccinePiechartData);
+    double noDose = vaccinePiechartData[0].length.toDouble();
+    double dose1 = vaccinePiechartData[1].length.toDouble();
+    double dose2 = vaccinePiechartData[2].length.toDouble();
+    double dose3 = vaccinePiechartData[3].length.toDouble();
+    vaccineDataMap = {
+      "No Dose": noDose,
+      "1st Dose": dose1,
+      "2nd Dose": dose2,
+      "3rd Dose": dose3,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    Map count =  ModalRoute.of(context).settings.arguments;
-    username = count['username'];
-   user = count['usercount'];
-   documents = count['docscount'];
-   tests = count['testcount'];
-   appointments = count['appointmentcount'];
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text("Dashboard"),
-        actions: [
-              PopupMenuItem(
-                value: 'Logout',
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    // Navigator.pushReplacementNamed(context, '/');
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.purple),
-                      Text(
-                        '  Logout',
-                        style: TextStyle(color: Colors.white),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+    return FutureBuilder(
+      future: loadData(),
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        if (snapshot.connectionState == ConnectionState.done){
+          return Scaffold(
+          appBar: AppBar(
+            title: Text('Dashboard'),
+            backgroundColor: Colors.purple,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+                child: Icon(Icons.logout, color: Colors.white,),
+              )
             ],
           ),
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.purple, Colors.indigo],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            )),
-        padding: EdgeInsets.fromLTRB(20, 60, 2, 0),
-        child: ListView(
-          children: <Widget>[
-            GestureDetector(
-                onTap: () async  {
-                  FetchData fetchData = FetchData();
-                  var body = await fetchData.getAllUser();
-                  List list = body['results'];
-                  List namesList=<String>[];
-                  for(var i=0; i<list.length; i++){
-                    namesList.insert(i,body['results'][i]['username']);
-                  }
-                  Navigator.pushNamed(context, '/totalusers',arguments: {'namesList':namesList,'username':username} );
-
-                },
-                child: Card(
-                  margin: EdgeInsets.all(10),
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+          body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.indigo],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
+              ),
+              child: Column(
+                children: [
+                  // SizedBox(height: 20.0),
+                  //PIE CHART ROW
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/rcptr');
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              child: PieChart(
+                                dataMap: rcptrDataMap,
+                                animationDuration: Duration(milliseconds:800),
+                                chartLegendSpacing: 20,
+                                chartRadius: MediaQuery.of(context).size.width / 2.5,
+                                colorList: [Colors.red, Colors.green],
+                                initialAngleInDegree: 0,
+                                chartType: ChartType.disc,
+                                ringStrokeWidth: 50,
+                                legendOptions: LegendOptions(
+                                  showLegendsInRow: false,
+                                  legendPosition: LegendPosition.top,
+                                  showLegends: true,
+                                  legendShape: BoxShape.circle,
+                                ),
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValueBackground: false,
+                                  showChartValues: true,
+                                  showChartValuesInPercentage: true,
+                                  showChartValuesOutside: false,
+                                  decimalPlaces: 0,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 150,
+                                height: 50,
+                                child: Card(
+                                  child: Center(
+                                    child: Text('RC-PTR', style: TextStyle(fontWeight: FontWeight.bold),)),
+                                  // child: Image(image: AssetImage('assets/GBM.jfif')),
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/docDetails');
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              child: PieChart(
+                                dataMap: vaccineDataMap,
+                                animationDuration: Duration(milliseconds: 800),
+                                chartLegendSpacing: 20,
+                                chartRadius: MediaQuery.of(context).size.width / 2.5,
+                                colorList: [Colors.red, Colors.yellow, Colors.orange, Colors.green],
+                                initialAngleInDegree: 0,
+                                chartType: ChartType.disc,
+                                ringStrokeWidth: 50,
+                                legendOptions: LegendOptions(
+                                  showLegendsInRow: false,
+                                  legendPosition: LegendPosition.top,
+                                  showLegends: true,
+                                  legendShape: BoxShape.circle,
+                                ),
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValueBackground: false,
+                                  showChartValues: true,
+                                  showChartValuesInPercentage: true,
+                                  showChartValuesOutside: false,
+                                  decimalPlaces: 0,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 150,
+                                height: 50,
+                                child: Card(
+                                  child: Center(child: Text('Vaccine', style: TextStyle(fontWeight: FontWeight.bold),)),
+                                  // child: Image(image: AssetImage('assets/GBM.jfif')),
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Padding(
-                    child: Text(
-                      'USER : ' + user.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/userDetails');
+                            },
+                            child: Card(
+                              margin: EdgeInsets.fromLTRB(16.0,8.0,16.0,8.0),
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Padding(
+                                child: Text(
+                                  'USER : ' + user.toString(),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+                              ),
+                            )),
+                        GestureDetector(
+                          onTap: () async{
+                            
+                            var data = await getData("/vaccine_test/");
+
+                            Navigator.pushNamed(context, '/docDetails',arguments: data);
+                          },
+                          child: Card(
+                            margin: EdgeInsets.fromLTRB(16.0,8.0,16.0,8.0),
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Padding(
+                              child: Text(
+                                'DOCUMENTS : ' + documents.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 40, horizontal: 40),
                   ),
-                )),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () async {
-                FetchData fetchData = FetchData();
-                var docdetails = await fetchData.getAlldocs();
-                List list = docdetails['results'];
-                List namesList=<String>[];
-                for(var i=0; i<list.length; i++){
-                  namesList.insert(i,docdetails['results'][i]['username']);
-                }
-                Navigator.pushNamed(context,'/totaldocs',arguments: {'namesList':namesList});
-              },
-              child: Card(
-                margin: EdgeInsets.all(10),
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  child: Text(
-                    'DOCUMENTS : ' + documents.toString(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FloatingActionButton.extended(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/dashboard');
+                          },
+                          backgroundColor: Colors.purple,
+                          foregroundColor: Colors.white,
+                          icon: Icon(Icons.refresh),
+                          label: Text('REFRESH'),
+                        ),
+                      ],
+                    ),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
+                  // SizedBox(height: 10,)
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Dashboard'),
+              backgroundColor: Colors.purple,
+            ),
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.indigo],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                )
+              ),
+              child: Center(
+                child: SpinKitPouringHourglass(
+                  color: Colors.white,
+                  size: 50.0,
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () async{
-                FetchData fetchData = FetchData();
-                var body = await fetchData.get_tests();
-                Navigator.pushNamed(context, '/totaltest',arguments: {'totaltest':body['results'],'username':username});
-              },
-              child: Card(
-                margin: EdgeInsets.all(10),
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  child: Text(
-                    'TESTS : ' + tests.toString(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: ()async {
-                FetchData fetchData = FetchData();
-                var appointment_details = await fetchData.get_appointments();
-                var appointmentList = appointment_details['results'];
-                // Map list;
-                // for(var i=0; i<appointmentList.length; i++) {
-                //   list.addEntries(appointment_details['results'][i]);
-                // }
-
-                Navigator.pushNamed(context, '/totalappointments',arguments: {'appointment_details':appointmentList,'username':username});
-              },
-              child: Card(
-                margin: EdgeInsets.all(10),
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  child: Text('APPOINTMENT : ' + appointments.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
-                ),
-              ),
-            ),
-
-
-
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 }

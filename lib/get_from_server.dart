@@ -1,193 +1,87 @@
-import 'package:covid_vaccine/welcome_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-class FetchData {
-  String api_url = 'http://195.229.90.114:4444';
-  // String api_url = 'http://10.0.2.2:8000';
+// String apiUrl = 'http://195.229.90.114:4444 ';
+String apiUrl = 'http://34.219.149.53:8080';
+// String apiUrl = 'http://10.0.2.2:8000';
 
-  Future<Map> getUser(String emailorusername) async {
-    String url = api_url + '/users_tbl/' + emailorusername + '?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
+//working
+Future<Map> getData(String uri) async {
+  String url = apiUrl + uri + '?format=json';
+  Map res = {'error': 'error'};
+  http.Response response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    res = jsonDecode(response.body);
+    return res;
+  } else {
     return res;
   }
-
-  Future<Map> getAllUser() async {
-    String url = api_url + '/users_tbl/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<Map> getCreatedBy() async {
-    String url = api_url + '/admin_tbl/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<Map> getAdminUser() async {
-    String url = api_url + '/admin_tbl/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<http.Response> postUser(String f_name,
-      String l_name,
-      String u_name,
-      String email_id,
-      String password,
-      String cnf_password,
-      String mobile_no) async {
-    String url = api_url + '/users_tbl/';
-    if (password == cnf_password) {
-      Map<String, String> headers = {"Content-type": 'application/json'};
-      Map data = {
-        'firstname': f_name,
-        'lastname': l_name,
-        'username': u_name,
-        'email_id': email_id,
-        'password': password,
-        'mobile_no': mobile_no,
-      };
-      String body = json.encode(data);
-      return await http.post(Uri.parse(url), headers: headers, body: body);
-    }
-  }
-
-  Future<bool> postDoc(String username, String test_type, String test_date,String created_date ,String created_by,String status, String filepath, File file) async {
-    String url = api_url + '/test/';
-    var request = http.MultipartRequest('POST', Uri.parse(url))
-      ..fields['username'] = username
-      ..fields['test_type'] = test_type
-      ..files.add(await http.MultipartFile.fromPath('file_upload',file.path))
-      ..fields['test_date'] = test_date
-      ..fields['created_date'] = created_date
-      ..fields['created_by'] = created_by
-      ..fields['is_active'] = status;
-    var resp = await request.send();
-
-    if (resp.statusCode == 200 || resp.statusCode == 201) {
-      return true;
-    } else {
-      print(resp.statusCode);
-      return false;
-    }
-  }
-
-  Future<http.Response> postAppointment(
-      String user_name,
-      int appointment_type,
-      String appointment_date_time,
-      String created_date_time,
-      int created_by,
-      ) async {
-
-    String url = api_url + '/appointment/';
-    Map<String, String> headers = {"Content-type": 'application/json'};
-    Map data = {
-      'username': user_name,
-      'appointment_type': appointment_type,
-      'appointment_date_time': appointment_date_time,
-      'created_date': created_date_time,
-      'created_by': created_by,};
-
-      String body = json.encode(data);
-      print(body);
-      return await http.post(Uri.parse(url), headers: headers, body: body);
-    }
-
-  Future<http.Response> postTest(String username,
-      String test_type,
-      String file_upload,
-      String test_date,
-      String created_by,
-      bool is_active,
-     ) async {
-        String url = api_url + '/test/';
-            Map<String, String> headers = {"Content-type": 'application/json'};
-            Map data = {
-              "username": username,
-              "test_type": test_type,
-              "file_upload": file_upload,
-              "test_date": test_date,
-              "created_by": created_by,
-              "is_active": is_active,};
-            String body = json.encode(data);
-            return await http.post(Uri.parse(url), headers: headers, body: body);
-    }
-
-
-  Future<Map> get_appointments() async {
-    String url = api_url + '/appointment/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<Map> get_tests() async {
-    String url = api_url + "/test/?format=json";
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<int> get_n_users() async {
-    String url = api_url + "/users_tbl/?format=json";
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res['count'];
-  }
-
-  Future<int> get_n_appointments() async {
-    String url = api_url + '/appointment/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res['results'].length;
-  }
-
-  Future<int> get_n_tests() async {
-    String url = api_url + '/test/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res['results'].length;
-  }
-
-  Future<int> get_n_docs() async {
-    String url = api_url + '/upload/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res['results'].length;
-  }
-
-  Future<Map> getAlldocs() async {
-    String url = api_url + '/upload/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-  Future<Map> getAppointmentType()async{
-    String url = api_url + '/appointment_type/?format=json';
-    http.Response resp = await http.get(Uri.parse(url));
-    Map res = jsonDecode(resp.body);
-    return res;
-  }
-
-// Future<String> getAppointmentType(int type)async{
-//   String url = api_url + '/appointment_type/?format=json';
-//   http.Response resp = await http.get(Uri.parse(url));
-//   Map res = jsonDecode(resp.body);
-//   List<String> types = [];
-//
-//   for(var i=0; i<res['count'];i++){
-//     types.add(res['results'][i]['appointment_type']);
-//   }
-//   return types[type];
-// }
 }
+
+//working
+Future<bool> postResult(String username, String result) async {
+  String url = apiUrl + '/rcptr_test/';
+  Map<String, String> headers = {'Content-type': 'application/json'};
+  Map data = {
+    'user_name': username,
+    'r_result': result,
+  };
+  String body = json.encode(data);
+  print(data);
+  print(body);
+  http.Response resp = await http.post(Uri.parse(url), headers: headers, body: body);
+  print('updating result');
+  print(resp.body);
+  return resp.body.contains('user_name') ? true : false;
+}
+
+//working
+Future<bool> postUser(
+  String firstName, String lastName, String username,
+  String emailId, String password, String mobileNo) async {
+
+    String url = apiUrl + '/users_tbl/';
+    var request = http.MultipartRequest('POST', Uri.parse(url))
+      ..fields['email_id'] = emailId
+      ..fields['username'] = username
+      ..fields['password'] = password
+      ..fields['firstname'] = firstName
+      ..fields['lastname'] = lastName
+      ..fields['mobile_no'] = mobileNo;
+    
+    var resp = await request.send();
+    http.Response hresp = await http.Response.fromStream(resp);
+    print('creating user');
+    print(hresp.body);
+    print(hresp.body == 'CREATED' ? true : false);
+    print(hresp.statusCode);
+
+    return hresp.statusCode == 200 ? true : false;
+}
+
+// "user_name": "cyborg",
+// "report_file": null,
+// "dose": "0",
+
+Future<bool> postDoc(String username, String dose, File file, String filepath) async {
+  String url = apiUrl + '/vaccine_test/';
+  var request = http.MultipartRequest('POST', Uri.parse(url))
+    ..fields['user_name'] = username
+    ..files.add(await http.MultipartFile.fromPath('report_file', file.path))
+    ..fields['dose'] = dose;
+  
+  var resp = await request.send();
+  http.Response hresp = await http.Response.fromStream(resp);
+  print(resp.statusCode);
+  return hresp.statusCode == 200 ? true : false;
+}
+
+/* database tables
+users_tbl
+admin_tbl
+rcptr_test
+vaccine_test
+
+*/

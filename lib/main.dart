@@ -1,42 +1,44 @@
-import 'package:covid_vaccine/total_appointments.dart';
-import 'package:covid_vaccine/total_doc.dart';
-import 'package:covid_vaccine/total_tests.dart';
-import 'package:covid_vaccine/total_users.dart';
-import 'package:covid_vaccine/user_summary.dart';
+import 'package:covid_tracker/user_details.dart';
 import 'package:flutter/material.dart';
-import 'appointment_details.dart';
-import 'create_appointment.dart';
-import 'welcome_screen-1.dart';
-import 'login2.dart';
-import 'signup.dart';
-import 'forgot_password.dart';
-import 'get_from_server.dart';
+import 'package:flutter/services.dart';
+import 'package:workmanager/workmanager.dart';
 import 'dashboard.dart';
+import 'login_screen.dart';
+import 'forgot_password.dart';
+import 'notification.dart';
+import 'rcptr_details.dart';
+import 'vaccine_details.dart';
+import 'user_details.dart';
+import 'document_details.dart';
+import 'sign_up.dart';
+import 'welcome_demo.dart';
 
-void main() {
+
+
+void main()async {
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Login(),
-        '/welcome': (context) => WelcomeScreen(),
-        '/dashboard':(context) => Dashboard(),
-        '/signup': (context) => SignUpscreen(),
+        '/': (context) => LoginScreen(),
+        '/dashboard': (context) => DashboardScreen(),
         '/forgot': (context) => ForgotPassword(),
-        '/Appointmentdetails':(context) => AppointmentDetails(),
-        '/totalusers':(context) => TotalUsers(),
-        '/totaldocs':(context) => TotalDoc(),
-        '/totalappointments':(context) => TotalAppointments(),
-        '/totaltest':(context) =>TotalTests(),
-        '/usersummary':(context) =>SummaryScreen(),
-        '/createappointment':(context) =>CreateAppointment(),
+        '/rcptr': (context) => RCPTRScreen(),
+        '/vaccine': (context) => VaccineScreen(),
+        '/userDetails': (context) => UserDetailScreen(),
+        '/documentview': (context) => PdfViewPage(),
+        '/docDetails': (context) => DocumentDetailScreen(),
+        '/welcome': (context) => WelcomeScreenDemo(),
+        '/signUp': (context) => SignUpscreen(),
+        '/pdfview': (context) => PdfViewPage(),
+        // '/welcome': (context) => WelcomeScreen(),
       },
     );
   }
